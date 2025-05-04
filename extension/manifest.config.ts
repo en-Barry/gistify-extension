@@ -18,5 +18,4 @@ export default defineManifest({
     '128': 'icons/icon128.png',
   },
   permissions: ['storage', 'activeTab'],
-  host_permissions: ['https://www.youtube.com/*']
 })
