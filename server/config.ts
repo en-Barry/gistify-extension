@@ -12,7 +12,7 @@ interface AppConfig {
 }
 
 // 環境変数を取得し、デフォルト値を設定
-export const appConfig: AppConfig = {
+const appConfig: AppConfig = {
   nodeEnv: process.env.NODE_ENV || 'development',
   mockMode: process.env.NODE_ENV === 'production' ? false : process.env.MOCK_MODE === 'true',
   port: parseInt(process.env.PORT || '3000', 10),
@@ -20,10 +20,10 @@ export const appConfig: AppConfig = {
 };
 
 // 開発モードかどうかを判定
-export const isDevelopment = appConfig.nodeEnv === 'development';
+const isDevelopment = appConfig.nodeEnv === 'development';
 
 // モックモードかどうかを判定
-export const isMockMode = appConfig.mockMode;
+const isMockMode = appConfig.mockMode;
 
 // 設定情報をログ出力（本番環境では最小限に、機密情報は除く）
 if (isDevelopment) {
@@ -34,3 +34,5 @@ if (isDevelopment) {
 } else {
   console.log(`動画より文字派！ API Server (${appConfig.nodeEnv})`);
 }
+
+export { appConfig, isDevelopment, isMockMode };
