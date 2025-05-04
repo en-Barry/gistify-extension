@@ -45,8 +45,10 @@ const App: React.FC = () => {
   const [summary, setSummary] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0); // ローディング進捗状態
   const [hasStoredApiKey, setHasStoredApiKey] = useState(false);
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false); // コピー成功状態
 
   // 初期化処理
   useEffect(() => {
@@ -83,6 +85,20 @@ const App: React.FC = () => {
     setError('');
     setSummary('');
     setIsLoading(true);
+    setCopySuccess(false);
+
+    // ローディング進捗のシミュレーション
+    setLoadingProgress(0);
+    const progressInterval = setInterval(() => {
+      setLoadingProgress(prev => {
+        // 95%までしか進まないようにする（完了は別で処理）
+        if (prev >= 95) {
+          clearInterval(progressInterval);
+          return 95;
+        }
+        return prev + Math.floor(Math.random() * 10) + 1;
+      });
+    }, 500);
 
     try {
       // APIキーが入力されていない場合
@@ -146,6 +162,8 @@ const App: React.FC = () => {
         setError('要約処理中にエラーが発生しました。サーバーが起動しているか確認してください。');
       }
     } finally {
+      clearInterval(progressInterval);
+      setLoadingProgress(100);
       setIsLoading(false);
     }
   };
@@ -153,7 +171,12 @@ const App: React.FC = () => {
   // クリップボードにコピー
   const copyToClipboard = () => {
     navigator.clipboard.writeText(summary).then(() => {
-      alert('要約をクリップボードにコピーしました');
+      // コピー成功状態を設定
+      setCopySuccess(true);
+      // 3秒後に成功表示を消す
+      setTimeout(() => {
+        setCopySuccess(false);
+      }, 3000);
     });
   };
 
@@ -239,6 +262,19 @@ const App: React.FC = () => {
         )}
       </div>
 
+      {/* ローディングインジケーター */}
+      {isLoading && (
+        <div className="loading-container">
+          <div className="loading-bar-background">
+            <div
+              className="loading-bar-progress"
+              style={{ width: `${loadingProgress}%` }}
+            ></div>
+          </div>
+          <div className="loading-text">{loadingProgress}% 完了</div>
+        </div>
+      )}
+
       {/* エラーメッセージ */}
       {error && <div className="error-message">{error}</div>}
 
@@ -247,8 +283,11 @@ const App: React.FC = () => {
         <div className="result-container">
           <div className="result-header">
             <h2>要約結果</h2>
-            <button onClick={copyToClipboard} className="copy-button">
-              コピー
+            <button
+              onClick={copyToClipboard}
+              className={`copy-button ${copySuccess ? 'copy-success' : ''}`}
+            >
+              {copySuccess ? 'コピーしました！' : 'コピー'}
             </button>
           </div>
           <pre className="summary-text">{summary}</pre>
