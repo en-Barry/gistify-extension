@@ -107,22 +107,23 @@ app.post('/summarize', async (c) => {
       // 本番モード: OpenAI APIを使用して要約を生成
       try {
         const response = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
+          model: 'gpt-4.1-nano-2025-04-14',
           messages: [
             {
               role: 'system',
-              content: `以下は動画の文字起こしです。出演者が本当に伝えたいことが伝わるように、内容をわかりやすくまとめてください。\n
-                        ・単なる要約ではなく、構造的に整理し、伝えたい主張が明確になるようにしてください\n
-                        ・ポイントごとに見出しをつけてください。見やすさを高めるため、簡単に絵文字による装飾もつけてください。\n
-                        ・最後に出演者の「一番伝えたかったメッセージ」を一文でまとめてください \n`
+              content: `以下は動画の文字起こしです。出演者が本当に伝えたいことが伝わるように、内容をわかりやすくまとめてください\n
+                        - 単なる要約ではなく、構造的に整理し、伝えたい主張が明確になるようにしてください\n
+                        - ポイントごとに見出しをつけてください。見出しの冒頭に絵文字を付けて、見やすさを向上させてください\n
+                        - 最後に出演者の「一番伝えたかったメッセージ」を一文でまとめてください\n`
             },
             {
               role: 'user',
-              content: `【文字起こし】\`\`\`${textToSummarize}\`\`\``
+              content: `以下が動画の文字起こし全文です。要約をお願いします：\n\n${textToSummarize}`
+
             }
           ],
-          temperature: 0.7,
-          max_tokens: 1000,
+          temperature: 0.5,
+          max_tokens: 1500,
         });
 
         summary = response.choices[0]?.message.content || '要約を生成できませんでした。';
