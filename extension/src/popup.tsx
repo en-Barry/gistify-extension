@@ -187,7 +187,7 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
-      <h1>Gistify</h1>
+      <h1>動画より文字派！</h1>
       <p className="subtitle">YouTube字幕・テキスト要約ツール</p>
 
       {/* モード選択 */}
@@ -300,7 +300,7 @@ const App: React.FC = () => {
       )}
 
       <footer>
-        <p>© 2025 Gistify - OpenAI API を使用</p>
+        <p>© 2025 動画より文字派！ - OpenAI API を使用</p>
         <p className="version">v{config.version}</p>
       </footer>
     </div>

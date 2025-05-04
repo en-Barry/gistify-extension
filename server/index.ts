@@ -21,7 +21,7 @@ app.use('*', cors({
 app.get('/', (c) => {
   return c.json({
     status: 'ok',
-    message: 'Gistify API Server is running',
+    message: '動画より文字派！ API Server is running',
     mode: isMockMode ? 'mock' : 'production',
     env: isDevelopment ? 'development' : 'production'
   });
@@ -169,7 +169,7 @@ app.post('/summarize', async (c) => {
 
 // サーバー起動
 const port = appConfig.port;
-console.log(`Gistify API Server starting on port ${port}...`);
+console.log(`動画より文字派！ API Server starting on port ${port}...`);
 
 export default {
   port,
