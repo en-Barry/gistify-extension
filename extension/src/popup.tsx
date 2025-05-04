@@ -38,7 +38,7 @@ const getCurrentYouTubeVideoId = async (): Promise<string | null> => {
 
 const App: React.FC = () => {
   // 状態管理
-  const [mode, setMode] = useState<'youtube' | 'manual'>('youtube');
+  const [mode, setMode] = useState<'youtube' | 'manual'>('manual'); // デフォルトは自由入力モード
   const [videoId, setVideoId] = useState('');
   const [text, setText] = useState('');
   const [apiKey, setApiKey] = useState('');
@@ -65,7 +65,12 @@ const App: React.FC = () => {
       // 現在のYouTube動画IDを取得（YouTubeページを開いている場合）
       const currentVideoId = await getCurrentYouTubeVideoId();
       if (currentVideoId) {
+        // YouTubeページを開いている場合は、YouTubeモードをデフォルトに設定
+        setMode('youtube');
         setVideoId(currentVideoId);
+      } else {
+        // YouTubeページ以外では自由入力モードをデフォルトに設定
+        setMode('manual');
       }
     };
 
