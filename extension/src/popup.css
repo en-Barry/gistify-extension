@@ -1,0 +1,222 @@
+/* 全体のスタイル */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* フォーム要素 */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.text-input,
+.textarea-input,
+.select-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.text-input:focus,
+.textarea-input:focus,
+.select-input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.textarea-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+/* ボタン */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.primary-button,
+.secondary-button,
+.copy-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.primary-button {
+  background-color: #3498db;
+  color: white;
+  flex: 1;
+}
+
+.primary-button:hover {
+  background-color: #2980b9;
+}
+
+.primary-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+}
+
+.secondary-button:hover {
+  background-color: #bdc3c7;
+}
+
+.copy-button {
+  background-color: #2ecc71;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.copy-button:hover {
+  background-color: #27ae60;
+}
+
+/* エラーメッセージ */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* 要約結果 */
+.result-container {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.result-header h2 {
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.summary-text {
+  white-space: pre-wrap;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* フッター */
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+.version {
+  font-size: 10px;
+  color: #bdc3c7;
+  margin-top: 5px;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.container {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 開発モードバッジ */
+.dev-mode-badge {
+  background-color: #ff9800;
+  color: white;
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
