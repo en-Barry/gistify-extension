@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.js';
 import redaxios from 'redaxios';
+import DOMPurify from 'dompurify';
 import config from './config.js';
 import './popup.css';
 
@@ -295,7 +296,7 @@ const App: React.FC = () => {
               {copySuccess ? 'コピーしました！' : 'コピー'}
             </button>
           </div>
-          <pre className="summary-text">{summary}</pre>
+          <pre className="summary-text">{DOMPurify.sanitize(summary)}</pre>
         </div>
       )}
 
