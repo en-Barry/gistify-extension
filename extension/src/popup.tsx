@@ -194,8 +194,8 @@ const App: React.FC = () => {
           onChange={(e) => setMode(e.target.value as 'youtube' | 'manual')}
           className="select-input"
         >
-          <option value="youtube">YouTube字幕要約</option>
-          <option value="manual">自由入力要約</option>
+          <option value="youtube">YouTube字幕</option>
+          <option value="manual">自由入力</option>
         </select>
       </div>
 
