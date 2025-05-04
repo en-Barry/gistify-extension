@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.js';
+import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.ts';
 import redaxios from 'redaxios';
 import DOMPurify from 'dompurify';
-import config from './config.js';
+import config from './config.ts';
 import './popup.css';
 
 // Chrome Storageからデータを取得する関数

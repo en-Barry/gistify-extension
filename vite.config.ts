@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { crx } from '@crxjs/vite-plugin'
-// @ts-expect-error 型解決を無視
 import manifest from './extension/manifest.config.ts'
 import path from 'path'
 

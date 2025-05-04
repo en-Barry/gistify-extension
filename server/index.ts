@@ -2,9 +2,9 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { getSubtitles } from 'youtube-captions-scraper';
 import OpenAI from 'openai';
-import { SummarizeRequest, SummarizeResponse } from '../shared/types.js';
-import { appConfig, isDevelopment, isMockMode } from './config.js';
-import { getMockSummary } from './mock.js';
+import { SummarizeRequest, SummarizeResponse } from '../shared/types.ts';
+import { appConfig, isDevelopment, isMockMode } from './config.ts';
+import { getMockSummary } from './mock.ts';
 
 const app = new Hono();
 

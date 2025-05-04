@@ -12,7 +12,9 @@
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["shared/*"]
-    }
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "exclude": ["dist", "node_modules"]
 }
