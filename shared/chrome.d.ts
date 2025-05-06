@@ -2,7 +2,7 @@
 interface Chrome {
   storage: {
     local: {
-      get: (keys: string | string[] | object | null, callback: (items: { [key: string]: any }) => void) => void;
+      get: (keys: string | string[] | object | null, callback: (items: { [key: string]: unknown }) => void) => void;
       set: (items: object, callback?: () => void) => void;
       remove: (keys: string | string[], callback?: () => void) => void;
     };
@@ -11,12 +11,12 @@ interface Chrome {
     query: (queryInfo: {
       active?: boolean;
       currentWindow?: boolean;
-      [key: string]: any;
+      [key: string]: unknown;
     }, callback: (tabs: {
       id?: number;
       url?: string;
       title?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     }[]) => void) => void;
   };
 }

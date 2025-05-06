@@ -12,8 +12,8 @@ interface AppConfig {
 
 // Viteの環境変数を安全に取得する関数
 const getEnvVar = (key: string, defaultValue: string): string => {
-  // @ts-ignore - Viteの環境変数にアクセス
-  const value = import.meta.env[key];
+  // Viteの環境変数にアクセス
+  const value = (import.meta.env as Record<string, unknown>)[key];
   return value !== undefined ? String(value) : defaultValue;
 };
 

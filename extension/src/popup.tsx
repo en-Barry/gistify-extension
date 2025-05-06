@@ -1,17 +1,30 @@
+import DOMPurify from 'dompurify';
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.ts';
 import redaxios from 'redaxios';
-import DOMPurify from 'dompurify';
+import type { RedaxiosError } from 'redaxios';
+
+import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.ts';
+
+// redaxiosのエラーを判定する型ガード関数
+function isRedaxiosError(error: unknown): error is RedaxiosError<{error: string}> {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as RedaxiosError).response === 'object'
+  );
+}
+
 import config from './config.ts';
 import './popup.css';
 
 // Chrome Storageからデータを取得する関数
 const getStoredSettings = (): Promise<AppSettings> => {
   return new Promise((resolve) => {
-    chrome.storage.local.get(['apiKey'], (result) => {
+    chrome.storage.local.get(['apiKey'], (result: Record<string, unknown>) => {
       resolve({
-        apiKey: result.apiKey || '',
+        apiKey: (result.apiKey as string) || '',
       });
     });
   });
@@ -153,14 +166,14 @@ const App: React.FC = () => {
       } else {
         setError(data.error);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('要約エラー:', err);
 
       // redaxiosのエラーレスポンスを処理
-      if (err.response && err.response.data && err.response.data.error) {
+      if (isRedaxiosError(err) && err.response?.data?.error) {
         // サーバーからのエラーメッセージがある場合
         setError(err.response.data.error);
-      } else if (err.message) {
+      } else if (err instanceof Error) {
         // エラーメッセージがある場合
         setError(`エラー: ${err.message}`);
       } else {

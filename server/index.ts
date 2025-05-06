@@ -1,10 +1,29 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { getSubtitles } from 'youtube-captions-scraper';
+import { ContentfulStatusCode } from 'hono/utils/http-status';
 import OpenAI from 'openai';
+import { getSubtitles } from 'youtube-captions-scraper';
+
 import { SummarizeRequest, SummarizeResponse } from '../shared/types.ts';
+
 import { appConfig, isDevelopment, isMockMode } from './config.ts';
 import { getMockSummary } from './mock.ts';
+
+// APIエラー用の型定義
+interface ApiErrorWithStatus extends Error {
+  status?: number;
+  code?: string;
+}
+
+// エラーがステータスコードを持つかチェックする型ガード
+function hasStatusCode(error: unknown): error is ApiErrorWithStatus {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as ApiErrorWithStatus).status === 'number'
+  );
+}
 
 const app = new Hono();
 
@@ -127,7 +146,7 @@ app.post('/summarize', async (c) => {
         });
 
         summary = response.choices[0]?.message.content || '要約を生成できませんでした。';
-      } catch (apiError: any) {
+      } catch (apiError: unknown) {
         console.error('OpenAI API呼び出しエラー:', apiError);
 
         // 開発モードの場合は、エラー時にもモック結果を返す
@@ -147,24 +166,29 @@ app.post('/summarize', async (c) => {
       summary
     } as SummarizeResponse);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('要約処理エラー:', error);
 
     // OpenAI APIのエラーをより詳細に処理
     let errorMessage = '要約処理中にエラーが発生しました。';
 
-    if (error.status === 429) {
-      errorMessage = 'OpenAI APIのクォータ制限に達しました。APIキーの利用制限を確認してください。';
-    } else if (error.status === 401) {
-      errorMessage = 'OpenAI APIキーが無効です。正しいAPIキーを入力してください。';
-    } else if (error.code === 'insufficient_quota') {
-      errorMessage = 'OpenAI APIの利用枠を超えました。請求情報を確認してください。';
+    if (hasStatusCode(error)) {
+      if (error.status === 429) {
+        errorMessage = 'OpenAI APIのクォータ制限に達しました。APIキーの利用制限を確認してください。';
+      } else if (error.status === 401) {
+        errorMessage = 'OpenAI APIキーが無効です。正しいAPIキーを入力してください。';
+      } else if (error.code === 'insufficient_quota') {
+        errorMessage = 'OpenAI APIの利用枠を超えました。請求情報を確認してください。';
+      }
     }
+
+    // ステータスコードを安全に取得
+    const statusCode = hasStatusCode(error) ? error.status : 500;
 
     return c.json({
       success: false,
       error: errorMessage
-    } as SummarizeResponse, error.status || 500);
+    } as SummarizeResponse, statusCode as unknown as ContentfulStatusCode);
   }
 });
 

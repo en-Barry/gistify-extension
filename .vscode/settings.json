@@ -2,10 +2,11 @@
   "cSpell.words": [
     "bunx",
     "crxjs",
-    "Gistify"
+    "Gistify",
+    "redaxios"
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": [
     "javascript",
