@@ -58,9 +58,26 @@ export class SlackService {
    * @returns 動画ID、見つからない場合はnull
    */
   extractYouTubeVideoId(text: string): string | null {
-    const YOUTUBE_URL_REGEX = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/;
-    const match = text.match(YOUTUBE_URL_REGEX);
-    return match ? match[1] : null;
+    // パターンを拡張して複数の形式に対応
+    const YOUTUBE_URL_PATTERNS = [
+      /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
+      /https?:\/\/youtu\.be\/([a-zA-Z0-9_-]{11})/,
+      /https?:\/\/(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+      /https?:\/\/(?:www\.)?youtube\.com\/v\/([a-zA-Z0-9_-]{11})/,
+      /https?:\/\/(?:www\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+    ];
+
+    // すべてのパターンで順番にマッチを試みる
+    for (const pattern of YOUTUBE_URL_PATTERNS) {
+      const match = text.match(pattern);
+      if (match) {
+        console.log(`YouTubeリンク検出: パターン ${pattern} でマッチしました`);
+        return match[1];
+      }
+    }
+
+    console.log(`YouTubeリンク検出失敗: "${text}"`);
+    return null;
   }
 
   /**
@@ -70,16 +87,25 @@ export class SlackService {
    * @returns ボットメンションかどうか
    */
   isBotMention(event: { subtype?: string; text?: string }, botMentionPrefix: string): boolean {
+    // デバッグ用ログ
+    console.log(`isBotMention checking: event=${JSON.stringify(event)}, botMentionPrefix=${botMentionPrefix}`);
+
     // botメッセージなどsubtypeがあれば無視
     if (event.subtype) {
+      console.log(`isBotMention: subtype ${event.subtype} のため無視`);
       return false;
     }
 
     // メンションテキストが指定の接頭辞で始まるかチェック
-    if (!event.text || !event.text.startsWith(botMentionPrefix)) {
+    if (!event.text) {
+      console.log(`isBotMention: event.text がないため無視`);
       return false;
     }
 
-    return true;
+    // より柔軟なメンション検出（startsWith だけでなく includes も使用）
+    const hasMention = event.text.startsWith(botMentionPrefix) || event.text.includes(botMentionPrefix);
+    console.log(`isBotMention: text="${event.text}", 検出結果=${hasMention}`);
+
+    return hasMention;
   }
 }

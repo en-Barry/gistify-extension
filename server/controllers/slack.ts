@@ -34,26 +34,40 @@ export class SlackController {
     try {
       const body = await c.req.json();
 
+      // デバッグ用：受信したリクエストボディ全体をログ出力
+      console.log("Slackイベント受信:", JSON.stringify(body, null, 2));
+
       // URL検証用challengeパラメータがあればそのまま返す
       if (body.challenge) {
+        console.log("URL検証チャレンジ受信");
         return c.text(body.challenge);
       }
 
       const event = body.event;
 
+      // デバッグ用：イベント情報をログ出力
+      console.log("Slackイベント:", JSON.stringify(event, null, 2));
+
       // ボットメンションかどうかをチェック
-      if (!this.slackService.isBotMention(event, appConfig.slackBotName)) {
+      const isMention = this.slackService.isBotMention(event, appConfig.slackBotName);
+      console.log(`ボットメンション判定: ${isMention}, 期待値: ${appConfig.slackBotName}`);
+
+      if (!isMention) {
         return c.text("not target mention");
       }
 
       // YouTubeリンク抽出
       const videoId = this.slackService.extractYouTubeVideoId(event.text);
+      console.log(`抽出されたYouTube動画ID: ${videoId}`);
+
       if (!videoId) {
         return c.text("YouTubeリンクが見つかりません");
       }
 
       // ユーザーIDからAPIキーを取得
       const apiKey = await this.kvStore.getApiKey(event.user);
+      console.log(`ユーザー ${event.user} のAPIキー取得結果: ${apiKey ? "成功" : "失敗"}`);
+
       if (!apiKey) {
         return c.text(
           "APIキーが未登録です。まず `/setapikey` で登録してください",
