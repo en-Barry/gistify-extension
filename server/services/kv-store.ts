@@ -3,9 +3,9 @@
  * Deno KVとモックKVの両方に対応
  */
 export interface KvStore {
-  get(key: string): Promise<{ value: string | null }>;
-  set(key: string, value: string): Promise<void>;
-  delete(key: string): Promise<void>;
+  get(key: string | string[]): Promise<{ value: string | null }>;
+  set(key: string | string[], value: string): Promise<void>;
+  delete(key: string | string[]): Promise<void>;
 }
 
 /**
@@ -15,17 +15,20 @@ export interface KvStore {
 export class MockKv implements KvStore {
   private store = new Map<string, string>();
 
-  async get(key: string): Promise<{ value: string | null }> {
-    const value = this.store.get(key) ?? null;
+  async get(key: string | string[]): Promise<{ value: string | null }> {
+    const keyStr = Array.isArray(key) ? key.join(':') : key;
+    const value = this.store.get(keyStr) ?? null;
     return { value };
   }
 
-  async set(key: string, value: string): Promise<void> {
-    this.store.set(key, value);
+  async set(key: string | string[], value: string): Promise<void> {
+    const keyStr = Array.isArray(key) ? key.join(':') : key;
+    this.store.set(keyStr, value);
   }
 
-  async delete(key: string): Promise<void> {
-    this.store.delete(key);
+  async delete(key: string | string[]): Promise<void> {
+    const keyStr = Array.isArray(key) ? key.join(':') : key;
+    this.store.delete(keyStr);
   }
 }
 
@@ -58,8 +61,8 @@ export class UserApiKeyManager {
   /**
    * ユーザーIDからKVストアのキーを生成
    */
-  private getUserKey(userId: string): string {
-    return `user:${userId}`;
+  private getUserKey(userId: string): string[] {
+    return ["user", userId];
   }
 
   /**
