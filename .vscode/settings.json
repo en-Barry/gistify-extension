@@ -2,8 +2,10 @@
   "cSpell.words": [
     "bunx",
     "crxjs",
+    "deleteapikey",
     "Gistify",
-    "redaxios"
+    "redaxios",
+    "setapikey"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
