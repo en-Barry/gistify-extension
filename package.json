@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:server": "bun --watch server/index.ts",
-    "dev:ui": "bunx vite",
-    "build": "bunx vite build"
+  "dev:server": "bun --watch server/index.ts",
+  "build": "bunx vite build --mode production",
+  "build:dev": "bunx vite build --mode development",
+  "lint": "bunx tsc --noEmit"
   },
   "dependencies": {
     "@types/dompurify": "^3.2.0",
