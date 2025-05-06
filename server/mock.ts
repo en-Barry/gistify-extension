@@ -65,3 +65,20 @@ export const getMockSummary = (text?: string) => {
 
   return MOCK_SUMMARY;
 };
+// モックのDeno KV互換インターフェース実装
+export class MockKv {
+  private store = new Map<string, string>();
+
+  async get(key: string): Promise<{ value: string | null }> {
+    const value = this.store.get(key) ?? null;
+    return { value };
+  }
+
+  async set(key: string, value: string): Promise<void> {
+    this.store.set(key, value);
+  }
+
+  async delete(key: string): Promise<void> {
+    this.store.delete(key);
+  }
+}
