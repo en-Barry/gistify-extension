@@ -40,7 +40,7 @@ const saveSettings = (settings: AppSettings): Promise<void> => {
 };
 
 // 現在のYouTube動画IDを取得する関数
-const getCurrentYouTubeVideoId = async (): Promise<string | null> => {
+const getCurrentYouTubeVideoId = (): Promise<string | null> => {
   return new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const url = tabs[0]?.url || '';
@@ -267,6 +267,7 @@ const App: React.FC = () => {
       {/* ボタン */}
       <div className="button-group">
         <button
+          type="button"
           onClick={handleSummarize}
           disabled={isLoading}
           className="primary-button"
@@ -275,7 +276,7 @@ const App: React.FC = () => {
         </button>
 
         {hasStoredApiKey && (
-          <button onClick={resetApiKey} className="secondary-button">
+          <button type="button" onClick={resetApiKey} className="secondary-button">
             APIキーを再設定
           </button>
         )}
@@ -303,6 +304,7 @@ const App: React.FC = () => {
           <div className="result-header">
             <h2>要約結果</h2>
             <button
+              type="button"
               onClick={copyToClipboard}
               className={`copy-button ${copySuccess ? 'copy-success' : ''}`}
             >

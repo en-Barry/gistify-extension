@@ -1,3 +1,5 @@
+import process from "node:process";
+
 import { config } from 'dotenv';
 
 // .envファイルを読み込む
