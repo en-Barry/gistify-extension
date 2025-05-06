@@ -1,0 +1,17 @@
+{
+  "lint": {
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules/", "dist/", "extension/src/**"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["no-explicit-any", "ban-ts-comment"]
+    }
+  },
+  "fmt": {
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules/", "dist/", "extension/src/**"],
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": true
+  }
+}
