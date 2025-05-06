@@ -4,7 +4,7 @@ import { ContentfulStatusCode } from "hono/utils/http-status";
 import OpenAI from "openai";
 import { getSubtitles } from "youtube-captions-scraper";
 
-import { SummarizeRequest, SummarizeResponse } from "../shared/types.ts";
+import type { SummarizeRequest, SummarizeResponse } from "../shared/types.d.ts";
 
 import { appConfig, isDevelopment, isMockMode } from "./config.ts";
 import { getMockSummary, MockKv } from "./mock.ts";

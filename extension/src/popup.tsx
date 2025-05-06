@@ -4,11 +4,11 @@ import { createRoot } from 'react-dom/client';
 import redaxios from 'redaxios';
 import type { RedaxiosError } from 'redaxios';
 
-import {
+import type {
   AppSettings,
   SummarizeRequest,
   SummarizeResponse,
-} from '../../shared/types.ts';
+} from '../../shared/types.d.ts';
 
 // redaxiosのエラーを判定する型ガード関数
 function isRedaxiosError(
