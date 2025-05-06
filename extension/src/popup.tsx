@@ -1,214 +1,66 @@
-import DOMPurify from 'dompurify';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import redaxios from 'redaxios';
-import type { RedaxiosError } from 'redaxios';
 
-import type {
-  AppSettings,
-  SummarizeRequest,
-  SummarizeResponse,
-} from '../../shared/types.d.ts';
-
-// redaxiosのエラーを判定する型ガード関数
-function isRedaxiosError(
-  error: unknown,
-): error is RedaxiosError<{ error: string }> {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'response' in error &&
-    typeof (error as RedaxiosError).response === 'object'
-  );
-}
-
+// コンポーネントのインポート
+import { ApiKeyInput } from './components/ApiKeyInput.tsx';
+import { ErrorMessage } from './components/ErrorMessage.tsx';
+import { LoadingIndicator } from './components/LoadingIndicator.tsx';
+import { ModeSelector } from './components/ModeSelector.tsx';
+import { SummaryResult } from './components/SummaryResult.tsx';
+import { TextInput } from './components/TextInput.tsx';
+import { YouTubeInput } from './components/YouTubeInput.tsx';
 import config from './config.ts';
+import { useApiKey } from './hooks/useApiKey.ts';
+import { useSummarize } from './hooks/useSummarize.ts';
+import { useYouTubeVideoId } from './hooks/useYouTubeVideoId.ts';
+
 import './popup.css';
 
-// Chrome Storageからデータを取得する関数
-const getStoredSettings = (): Promise<AppSettings> => {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['apiKey'], (result: Record<string, unknown>) => {
-      resolve({
-        apiKey: (result.apiKey as string) || '',
-      });
-    });
-  });
-};
-
-// Chrome Storageにデータを保存する関数
-const saveSettings = (settings: AppSettings): Promise<void> => {
-  return new Promise((resolve) => {
-    chrome.storage.local.set(settings, () => {
-      resolve();
-    });
-  });
-};
-
-// 現在のYouTube動画IDを取得する関数
-const getCurrentYouTubeVideoId = (): Promise<string | null> => {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const url = tabs[0]?.url || '';
-      const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
-      resolve(match ? match[1] : null);
-    });
-  });
-};
-
 const App: React.FC = () => {
-  // 状態管理
-  const [mode, setMode] = useState<'youtube' | 'manual'>('manual'); // デフォルトは自由入力モード
-  const [videoId, setVideoId] = useState('');
+  // APIキー管理フック
+  const {
+    apiKey,
+    setApiKey,
+    hasStoredApiKey,
+    showApiKeyInput,
+    saveApiKey,
+    resetApiKey,
+  } = useApiKey();
+
+  // YouTube動画ID管理フック
+  const {
+    mode,
+    setMode,
+    videoId,
+    setVideoId,
+  } = useYouTubeVideoId();
+
+  // 要約処理フック
+  const {
+    summary,
+    error,
+    isLoading,
+    loadingProgress,
+    summarize,
+  } = useSummarize();
+
+  // その他状態管理
   const [text, setText] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [summary, setSummary] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0); // ローディング進捗状態
-  const [hasStoredApiKey, setHasStoredApiKey] = useState(false);
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false); // コピー成功状態
-
-  // 初期化処理
-  useEffect(() => {
-    const initialize = async () => {
-      // 保存されたAPIキーを取得
-      const settings = await getStoredSettings();
-      if (settings.apiKey) {
-        setApiKey(settings.apiKey);
-        setHasStoredApiKey(true);
-      } else {
-        setShowApiKeyInput(true);
-      }
-
-      // 現在のYouTube動画IDを取得（YouTubeページを開いている場合）
-      const currentVideoId = await getCurrentYouTubeVideoId();
-      if (currentVideoId) {
-        // YouTubeページを開いている場合は、YouTubeモードをデフォルトに設定
-        setMode('youtube');
-        setVideoId(currentVideoId);
-      } else {
-        // YouTubeページ以外では自由入力モードをデフォルトに設定
-        setMode('manual');
-      }
-    };
-
-    initialize();
-  }, []);
-
-  // APIキーを再設定
-  const resetApiKey = () => {
-    setApiKey('');
-    setHasStoredApiKey(false);
-    setShowApiKeyInput(true);
-    saveSettings({ apiKey: '' });
-  };
 
   // 要約処理
   const handleSummarize = async () => {
-    setError('');
-    setSummary('');
-    setIsLoading(true);
-    setCopySuccess(false);
+    // APIキーが有効な場合に実行するコールバック
+    const onApiKeyValid = !hasStoredApiKey ? saveApiKey : undefined;
 
-    // ローディング進捗のシミュレーション
-    setLoadingProgress(0);
-    const progressInterval = setInterval(() => {
-      setLoadingProgress((prev) => {
-        // 95%までしか進まないようにする（完了は別で処理）
-        if (prev >= 95) {
-          clearInterval(progressInterval);
-          return 95;
-        }
-        return prev + Math.floor(Math.random() * 10) + 1;
-      });
-    }, 500);
-
-    try {
-      // APIキーが入力されていない場合
-      if (!apiKey) {
-        setError('OpenAI APIキーを入力してください');
-        setIsLoading(false);
-        return;
-      }
-
-      // YouTubeモードで動画IDが入力されていない場合
-      if (mode === 'youtube' && !videoId) {
-        setError('YouTube動画IDを入力してください');
-        setIsLoading(false);
-        return;
-      }
-
-      // 自由入力モードでテキストが入力されていない場合
-      if (mode === 'manual' && !text) {
-        setError('要約するテキストを入力してください');
-        setIsLoading(false);
-        return;
-      }
-
-      // APIリクエスト
-      const request: SummarizeRequest = mode === 'youtube'
-        ? { mode: 'youtube', videoId, apiKey }
-        : { mode: 'manual', text, apiKey };
-
-      const response = await redaxios.post(
-        `${config.apiUrl}/summarize`,
-        request,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const data = response.data as SummarizeResponse;
-
-      // APIキーが有効な場合は保存
-      if (!hasStoredApiKey && apiKey) {
-        await saveSettings({ apiKey });
-        setHasStoredApiKey(true);
-        setShowApiKeyInput(false);
-      }
-
-      if (data.success) {
-        setSummary(data.summary);
-      } else {
-        setError(data.error);
-      }
-    } catch (err: unknown) {
-      console.error('要約エラー:', err);
-
-      // redaxiosのエラーレスポンスを処理
-      if (isRedaxiosError(err) && err.response?.data?.error) {
-        // サーバーからのエラーメッセージがある場合
-        setError(err.response.data.error);
-      } else if (err instanceof Error) {
-        // エラーメッセージがある場合
-        setError(`エラー: ${err.message}`);
-      } else {
-        // その他のエラー
-        setError(
-          '要約処理中にエラーが発生しました。サーバーが起動しているか確認してください。',
-        );
-      }
-    } finally {
-      clearInterval(progressInterval);
-      setLoadingProgress(100);
-      setIsLoading(false);
-    }
-  };
-
-  // クリップボードにコピー
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(summary).then(() => {
-      // コピー成功状態を設定
-      setCopySuccess(true);
-      // 3秒後に成功表示を消す
-      setTimeout(() => {
-        setCopySuccess(false);
-      }, 3000);
-    });
+    await summarize(
+      mode,
+      apiKey,
+      {
+        videoId: mode === 'youtube' ? videoId : undefined,
+        text: mode === 'manual' ? text : undefined,
+      },
+      onApiKeyValid
+    );
   };
 
   return (
@@ -217,63 +69,21 @@ const App: React.FC = () => {
       <p className='subtitle'>YouTube字幕・テキスト要約ツール</p>
 
       {/* モード選択 */}
-      <div className='form-group'>
-        <label htmlFor='mode'>モード選択:</label>
-        <select
-          id='mode'
-          value={mode}
-          onChange={(e) => setMode(e.target.value as 'youtube' | 'manual')}
-          className='select-input'
-        >
-          <option value='youtube'>YouTube字幕</option>
-          <option value='manual'>自由入力</option>
-        </select>
-      </div>
+      <ModeSelector mode={mode} setMode={setMode} />
 
       {/* YouTube動画ID入力 */}
       {mode === 'youtube' && (
-        <div className='form-group'>
-          <label htmlFor='videoId'>YouTube動画ID:</label>
-          <input
-            type='text'
-            id='videoId'
-            value={videoId}
-            onChange={(e) => setVideoId(e.target.value)}
-            placeholder='例: dQw4w9WgXcQ または完全なURL'
-            className='text-input'
-          />
-        </div>
+        <YouTubeInput videoId={videoId} setVideoId={setVideoId} />
       )}
 
       {/* 自由入力テキスト */}
       {mode === 'manual' && (
-        <div className='form-group'>
-          <label htmlFor='text'>要約するテキスト:</label>
-          <textarea
-            id='text'
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder='要約したいテキストを入力してください'
-            rows={5}
-            className='textarea-input'
-          />
-        </div>
+        <TextInput text={text} setText={setText} />
       )}
 
       {/* APIキー入力 */}
       {(showApiKeyInput || !hasStoredApiKey) && (
-        <div className='form-group'>
-          <label htmlFor='apiKey'>OpenAI APIキー:</label>
-          <input
-            type='password'
-            id='apiKey'
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder='sk-...'
-            className='text-input'
-          />
-          <p className='hint'>※APIキーは端末内に保存されます</p>
-        </div>
+        <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
       )}
 
       {/* ボタン */}
@@ -299,38 +109,13 @@ const App: React.FC = () => {
       </div>
 
       {/* ローディングインジケーター */}
-      {isLoading && (
-        <div className='loading-container'>
-          <div className='loading-bar-background'>
-            <div
-              className='loading-bar-progress'
-              style={{ width: `${loadingProgress}%` }}
-            >
-            </div>
-          </div>
-          <div className='loading-text'>{loadingProgress}% 完了</div>
-        </div>
-      )}
+      {isLoading && <LoadingIndicator progress={loadingProgress} />}
 
       {/* エラーメッセージ */}
-      {error && <div className='error-message'>{error}</div>}
+      <ErrorMessage message={error} />
 
       {/* 要約結果 */}
-      {summary && (
-        <div className='result-container'>
-          <div className='result-header'>
-            <h2>要約結果</h2>
-            <button
-              type='button'
-              onClick={copyToClipboard}
-              className={`copy-button ${copySuccess ? 'copy-success' : ''}`}
-            >
-              {copySuccess ? 'コピーしました！' : 'コピー'}
-            </button>
-          </div>
-          <pre className='summary-text'>{DOMPurify.sanitize(summary)}</pre>
-        </div>
-      )}
+      {summary && <SummaryResult summary={summary} />}
 
       <footer>
         <p>© 2025 動画より文字派！ - OpenAI API を使用</p>
