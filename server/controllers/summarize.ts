@@ -2,9 +2,9 @@ import { Context } from "hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 
 import type { SummarizeRequest, SummarizeResponse } from "../../shared/types.d.ts";
-import { OpenAIService } from "../services/openai.js";
-import { YouTubeService } from "../services/youtube.js";
-import { handleOpenAIError } from "../utils/error.js";
+import { OpenAIService } from "../services/openai.ts";
+import { YouTubeService } from "../services/youtube.ts";
+import { handleOpenAIError } from "../utils/error.ts";
 
 /**
  * 要約APIコントローラー

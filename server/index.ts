@@ -1,8 +1,10 @@
-import { appConfig } from "./config/index.js";
-import { initializeRouter } from "./routes/index.js";
+import { Hono, type ExecutionContext } from "hono";
+
+import { appConfig } from "./config/index.ts";
+import { initializeRouter } from "./routes/index.ts";
 
 // グローバル変数
-let app: any;
+let app: Hono;
 
 /**
  * サーバー起動関数
@@ -27,10 +29,10 @@ startServer().catch(console.error);
 // Deno/Bun用のエクスポート
 export default {
   port: appConfig.port,
-  fetch: (request: Request, env: any, ctx: any) => {
+  fetch: (request: Request, env?: Record<string, unknown>, ctx?: unknown) => {
     if (!app) {
       return new Response("Server is starting...", { status: 503 });
     }
-    return app.fetch(request, env, ctx);
+    return app.fetch(request, env, ctx as ExecutionContext);
   },
 };

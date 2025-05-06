@@ -1,6 +1,6 @@
 import { Context } from "hono";
 
-import { isMockMode, isDevelopment } from "../config/index.js";
+import { isMockMode, isDevelopment } from "../config/index.ts";
 
 /**
  * ヘルスチェックコントローラー

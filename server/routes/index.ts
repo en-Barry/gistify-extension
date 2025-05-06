@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
-import { healthController } from "../controllers/health.js";
-import { SlackController } from "../controllers/slack.js";
-import { summarizeController } from "../controllers/summarize.js";
-import { createKvStore, UserApiKeyManager } from "../services/kv-store.js";
+import { healthController } from "../controllers/health.ts";
+import { SlackController } from "../controllers/slack.ts";
+import { summarizeController } from "../controllers/summarize.ts";
+import { createKvStore, UserApiKeyManager } from "../services/kv-store.ts";
 
 /**
  * アプリケーションルーターの初期化

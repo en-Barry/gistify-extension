@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-import { isMockMode, isDevelopment } from "../config/index.js";
+import { isMockMode, isDevelopment } from "../config/index.ts";
 
 // モック用の要約結果
 export const MOCK_SUMMARY = `

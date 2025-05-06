@@ -1,9 +1,9 @@
 import { Context } from "hono";
 
-import { UserApiKeyManager } from "../services/kv-store.js";
-import { OpenAIService } from "../services/openai.js";
-import { SlackService } from "../services/slack.js";
-import { YouTubeService } from "../services/youtube.js";
+import { UserApiKeyManager } from "../services/kv-store.ts";
+import { OpenAIService } from "../services/openai.ts";
+import { SlackService } from "../services/slack.ts";
+import { YouTubeService } from "../services/youtube.ts";
 
 /**
  * Slack連携コントローラー

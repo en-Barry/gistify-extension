@@ -1,4 +1,4 @@
-import { appConfig } from "../config/index.js";
+import { appConfig } from "../config/index.ts";
 
 /**
  * Slack連携サービス
@@ -69,7 +69,7 @@ export class SlackService {
    * @param botMentionPrefix ボットメンションの接頭辞
    * @returns ボットメンションかどうか
    */
-  isBotMention(event: any, botMentionPrefix: string): boolean {
+  isBotMention(event: { subtype?: string; text?: string }, botMentionPrefix: string): boolean {
     // botメッセージなどsubtypeがあれば無視
     if (event.subtype) {
       return false;
