@@ -5,7 +5,8 @@
     "deleteapikey",
     "Gistify",
     "redaxios",
-    "setapikey"
+    "setapikey",
+    "youtu"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"

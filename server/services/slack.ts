@@ -81,10 +81,15 @@ export class SlackService {
   /**
    * Slackイベントがボットメンションかどうかを判定
    * @param event Slackイベント
-   * @param botMentionPrefix ボットメンションの接頭辞
+   * @param botMemberId ボットのメンバーID
    * @returns ボットメンションかどうか
    */
-  isBotMention(event: { subtype?: string; text?: string }, botMentionPrefix: string): boolean {
+  isBotMention(event: { subtype?: string; text?: string }, botMemberId?: string): boolean {
+    // ボットIDが未設定の場合は常にfalse
+    if (!botMemberId) {
+      return false;
+    }
+
     // botメッセージなどsubtypeがあれば無視
     if (event.subtype) {
       return false;
@@ -95,8 +100,8 @@ export class SlackService {
       return false;
     }
 
-    // より柔軟なメンション検出（startsWith だけでなく includes も使用）
-    const hasMention = event.text.startsWith(botMentionPrefix) || event.text.includes(botMentionPrefix);
+    // メンバーIDを含むメンションを検出
+    const hasMention = event.text.includes(botMemberId);
 
     return hasMention;
   }

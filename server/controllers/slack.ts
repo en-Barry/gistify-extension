@@ -14,6 +14,9 @@ export class SlackController {
   private slackService: SlackService;
   private youtubeService: YouTubeService;
   private kvStore: UserApiKeyManager;
+  // 重複イベント処理を防止するためのキャッシュ
+  private static eventIdCache = new Set<string>();
+  private static readonly MAX_CACHE_SIZE = 100;
 
   /**
    * コンストラクタ
@@ -41,8 +44,28 @@ export class SlackController {
 
       const event = body.event;
 
+      // 重複イベント処理を防止（Slackからの再試行対応）
+      if (body.event_id && body.event_time) {
+        // キャッシュがMAX_CACHE_SIZEを超えたら古いものから削除
+        if (SlackController.eventIdCache.size >= SlackController.MAX_CACHE_SIZE) {
+          const firstItem = SlackController.eventIdCache.values().next().value;
+          if (firstItem) {
+            SlackController.eventIdCache.delete(firstItem);
+          }
+        }
+
+        // 既に処理済みのイベントであれば無視
+        if (SlackController.eventIdCache.has(body.event_id)) {
+          console.log(`重複イベント検出：${body.event_id}をスキップします`);
+          return c.text("duplicate event");
+        }
+
+        // 新しいイベントIDをキャッシュに追加
+        SlackController.eventIdCache.add(body.event_id);
+      }
+
       // ボットメンションかどうかをチェック
-      if (!this.slackService.isBotMention(event, appConfig.slackBotName)) {
+      if (!this.slackService.isBotMention(event, appConfig.slackBotMemberId)) {
         return c.text("not target mention");
       }
 
