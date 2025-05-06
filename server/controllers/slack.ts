@@ -65,7 +65,7 @@ export class SlackController {
       }
 
       // ボットメンションかどうかをチェック
-      if (!this.slackService.isBotMention(event, appConfig.slackBotMemberId)) {
+      if (!this.slackService.isBotMention(event, appConfig.slackBotMemberId!)) {
         return c.text("not target mention");
       }
 
