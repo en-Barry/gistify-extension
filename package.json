@@ -10,10 +10,7 @@
     "lint": "bunx tsc --noEmit",
     "lint:eslint": "bunx eslint .",
     "lint:fix": "bunx eslint . --fix",
-    "lint:deno": "deno lint",
-    "fmt:deno": "deno fmt",
-    "fmt:deno:check": "deno fmt --check",
-    "lint:all": "bun run lint && bun run lint:eslint && bun run lint:deno"
+    "lint:all": "bun run lint && bun run lint:eslint"
   },
   "dependencies": {
     "@types/dompurify": "^3.2.0",
