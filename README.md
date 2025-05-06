@@ -7,12 +7,12 @@ YouTubeやSpotifyの文字起こしを、生成AI（LLM）を使って「構造�
 
 ## 🚀 導入方法
 
-### 🧩 Chrome拡張機能
+### 🧩 Chrome拡張機能（ストア申請中）
 
 - Chromeウェブストアからインストール 👉
   [動画より文字派！（Chrome拡張）](https://chrome.google.com/webstore/detail/xxxxx)
 
-### 💬 Slackアプリ
+### 💬 Slackアプリ（公開に向けて準備中）
 
 - Slack App Directoryからワークスペースに追加 👉
   [動画より文字派！（Slackアプリ）](https://slack.com/apps/xxxxx)
@@ -41,7 +41,7 @@ YouTubeやSpotifyの文字起こしを、生成AI（LLM）を使って「構造�
 Slack上で以下のようにメンションとYouTubeリンクを投稿：
 
 ```
-@動画より文字派！ https://www.youtube.com/watch?v=xxxx
+@gistify https://www.youtube.com/watch?v=xxxx
 ```
 
 → 数秒後、同じスレッドに要約文が自動で返信されます
@@ -67,7 +67,7 @@ Slack上で以下のようにメンションとYouTubeリンクを投稿：
 - OpenAI APIキーは **各ユーザーが自分で登録・管理**します。
   運営側が収集・共有・悪用することは一切ありません。
 - Slackのキーは Deno KV に安全に保存され、任意のタイミングで削除可能です。
-- プライバシーポリシー：[Notionで公開中](https://your-notion-link)
+- プライバシーポリシー：[Notionで公開中](https://aquamarine-eggnog-e37.notion.site/1e9f4ef03a57805a83bdf46c2052f613)
 
 ---
 
