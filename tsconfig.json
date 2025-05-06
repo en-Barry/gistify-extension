@@ -16,5 +16,6 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
+  "types": ["deno"],
   "exclude": ["dist", "node_modules"]
 }
