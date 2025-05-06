@@ -71,12 +71,10 @@ export class SlackService {
     for (const pattern of YOUTUBE_URL_PATTERNS) {
       const match = text.match(pattern);
       if (match) {
-        console.log(`YouTubeリンク検出: パターン ${pattern} でマッチしました`);
         return match[1];
       }
     }
 
-    console.log(`YouTubeリンク検出失敗: "${text}"`);
     return null;
   }
 
@@ -87,24 +85,18 @@ export class SlackService {
    * @returns ボットメンションかどうか
    */
   isBotMention(event: { subtype?: string; text?: string }, botMentionPrefix: string): boolean {
-    // デバッグ用ログ
-    console.log(`isBotMention checking: event=${JSON.stringify(event)}, botMentionPrefix=${botMentionPrefix}`);
-
     // botメッセージなどsubtypeがあれば無視
     if (event.subtype) {
-      console.log(`isBotMention: subtype ${event.subtype} のため無視`);
       return false;
     }
 
     // メンションテキストが指定の接頭辞で始まるかチェック
     if (!event.text) {
-      console.log(`isBotMention: event.text がないため無視`);
       return false;
     }
 
     // より柔軟なメンション検出（startsWith だけでなく includes も使用）
     const hasMention = event.text.startsWith(botMentionPrefix) || event.text.includes(botMentionPrefix);
-    console.log(`isBotMention: text="${event.text}", 検出結果=${hasMention}`);
 
     return hasMention;
   }
