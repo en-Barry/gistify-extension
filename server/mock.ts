@@ -22,15 +22,19 @@ export const MOCK_SUMMARY = `
 
 // YouTube字幕のモックデータ
 export const MOCK_YOUTUBE_SUBTITLES = [
-  { text: "こんにちは、今日は人工知能について話します。", start: 0, dur: 5 },
-  { text: "AIは私たちの生活を大きく変えつつあります。", start: 5, dur: 5 },
-  { text: "特に自然言語処理の進歩は目覚ましいものがあります。", start: 10, dur: 5 },
-  { text: "ChatGPTやClaudeなどの大規模言語モデルは、", start: 15, dur: 5 },
-  { text: "人間のような文章を生成することができます。", start: 20, dur: 5 },
-  { text: "これらのモデルは様々な用途に活用されています。", start: 25, dur: 5 },
-  { text: "例えば、文章要約、翻訳、質問応答などです。", start: 30, dur: 5 },
-  { text: "今後もAI技術はさらに発展していくでしょう。", start: 35, dur: 5 },
-  { text: "ご視聴ありがとうございました。", start: 40, dur: 5 }
+  { text: 'こんにちは、今日は人工知能について話します。', start: 0, dur: 5 },
+  { text: 'AIは私たちの生活を大きく変えつつあります。', start: 5, dur: 5 },
+  {
+    text: '特に自然言語処理の進歩は目覚ましいものがあります。',
+    start: 10,
+    dur: 5,
+  },
+  { text: 'ChatGPTやClaudeなどの大規模言語モデルは、', start: 15, dur: 5 },
+  { text: '人間のような文章を生成することができます。', start: 20, dur: 5 },
+  { text: 'これらのモデルは様々な用途に活用されています。', start: 25, dur: 5 },
+  { text: '例えば、文章要約、翻訳、質問応答などです。', start: 30, dur: 5 },
+  { text: '今後もAI技術はさらに発展していくでしょう。', start: 35, dur: 5 },
+  { text: 'ご視聴ありがとうございました。', start: 40, dur: 5 },
 ];
 
 /**

@@ -12,7 +12,13 @@ declare module 'redaxios' {
       username: string;
       password: string;
     };
-    responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
+    responseType?:
+      | 'arraybuffer'
+      | 'blob'
+      | 'document'
+      | 'json'
+      | 'text'
+      | 'stream';
     [key: string]: unknown;
   }
 
@@ -34,13 +40,37 @@ declare module 'redaxios' {
   export interface RedaxiosInstance {
     (config: RedaxiosRequestConfig): Promise<RedaxiosResponse>;
     (url: string, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse>;
-    get<T = unknown>(url: string, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    delete<T = unknown>(url: string, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    head<T = unknown>(url: string, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    options<T = unknown>(url: string, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    post<T = unknown>(url: string, data?: unknown, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    put<T = unknown>(url: string, data?: unknown, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
-    patch<T = unknown>(url: string, data?: unknown, config?: RedaxiosRequestConfig): Promise<RedaxiosResponse<T>>;
+    get<T = unknown>(
+      url: string,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    delete<T = unknown>(
+      url: string,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    head<T = unknown>(
+      url: string,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    options<T = unknown>(
+      url: string,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    post<T = unknown>(
+      url: string,
+      data?: unknown,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    put<T = unknown>(
+      url: string,
+      data?: unknown,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
+    patch<T = unknown>(
+      url: string,
+      data?: unknown,
+      config?: RedaxiosRequestConfig,
+    ): Promise<RedaxiosResponse<T>>;
   }
 
   const redaxios: RedaxiosInstance;

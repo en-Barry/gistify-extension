@@ -31,7 +31,7 @@ export const config: AppConfig = {
   isDevelopment: isDev,
 
   // アプリケーションバージョン
-  version: appVersion
+  version: appVersion,
 };
 
 // 設定情報をログ出力（開発モードのみ）

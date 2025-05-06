@@ -28,13 +28,16 @@ function hasStatusCode(error: unknown): error is ApiErrorWithStatus {
 const app = new Hono();
 
 // CORSを有効化（Chrome拡張からのリクエストを許可）
-app.use('*', cors({
-  origin: '*',
-  allowMethods: ['POST', 'GET', 'OPTIONS'],
-  allowHeaders: ['Content-Type'],
-  exposeHeaders: ['Content-Length'],
-  maxAge: 86400,
-}));
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowHeaders: ['Content-Type'],
+    exposeHeaders: ['Content-Length'],
+    maxAge: 86400,
+  }),
+);
 
 // ヘルスチェック用エンドポイント
 app.get('/', (c) => {
@@ -42,7 +45,7 @@ app.get('/', (c) => {
     status: 'ok',
     message: '動画より文字派！ API Server is running',
     mode: isMockMode ? 'mock' : 'production',
-    env: isDevelopment ? 'development' : 'production'
+    env: isDevelopment ? 'development' : 'production',
   });
 });
 
@@ -70,7 +73,7 @@ app.post('/summarize', async (c) => {
 
         // 字幕テキストを連結
         textToSummarize = subtitles
-          .map(item => item.text)
+          .map((item) => item.text)
           .join(' ')
           .trim();
 
@@ -82,7 +85,7 @@ app.post('/summarize', async (c) => {
           });
 
           textToSummarize = enSubtitles
-            .map(item => item.text)
+            .map((item) => item.text)
             .join(' ')
             .trim();
         }
@@ -90,14 +93,16 @@ app.post('/summarize', async (c) => {
         if (!textToSummarize) {
           return c.json({
             success: false,
-            error: '字幕を取得できませんでした。動画IDを確認するか、自由入力モードをお試しください。'
+            error:
+              '字幕を取得できませんでした。動画IDを確認するか、自由入力モードをお試しください。',
           } as SummarizeResponse, 400);
         }
       } catch (error) {
         console.error('YouTube字幕取得エラー:', error);
         return c.json({
           success: false,
-          error: '字幕の取得に失敗しました。動画IDを確認するか、自由入力モードをお試しください。'
+          error:
+            '字幕の取得に失敗しました。動画IDを確認するか、自由入力モードをお試しください。',
         } as SummarizeResponse, 400);
       }
     } else if (body.mode === 'manual') {
@@ -107,13 +112,13 @@ app.post('/summarize', async (c) => {
       if (!textToSummarize || textToSummarize.trim().length === 0) {
         return c.json({
           success: false,
-          error: '要約するテキストを入力してください。'
+          error: '要約するテキストを入力してください。',
         } as SummarizeResponse, 400);
       }
     } else {
       return c.json({
         success: false,
-        error: '不正なモードが指定されました。'
+        error: '不正なモードが指定されました。',
       } as SummarizeResponse, 400);
     }
 
@@ -130,22 +135,24 @@ app.post('/summarize', async (c) => {
           messages: [
             {
               role: 'system',
-              content: `以下は動画の文字起こしです。出演者が本当に伝えたいことが伝わるように、内容をわかりやすくまとめてください\n
+              content:
+                `以下は動画の文字起こしです。出演者が本当に伝えたいことが伝わるように、内容をわかりやすくまとめてください\n
                         - 単なる要約ではなく、構造的に整理し、伝えたい主張が明確になるようにしてください\n
                         - ポイントごとに見出しをつけてください。見出しの冒頭に絵文字を付けて、見やすさを向上させてください\n
-                        - 最後に出演者の「一番伝えたかったメッセージ」を一文でまとめてください\n`
+                        - 最後に出演者の「一番伝えたかったメッセージ」を一文でまとめてください\n`,
             },
             {
               role: 'user',
-              content: `以下が動画の文字起こし全文です。要約をお願いします：\n\n${textToSummarize}`
-
-            }
+              content:
+                `以下が動画の文字起こし全文です。要約をお願いします：\n\n${textToSummarize}`,
+            },
           ],
           temperature: 0.5,
           max_tokens: 1500,
         });
 
-        summary = response.choices[0]?.message.content || '要約を生成できませんでした。';
+        summary = response.choices[0]?.message.content ||
+          '要約を生成できませんでした。';
       } catch (apiError: unknown) {
         console.error('OpenAI API呼び出しエラー:', apiError);
 
@@ -163,9 +170,8 @@ app.post('/summarize', async (c) => {
     // 要約結果を返す
     return c.json({
       success: true,
-      summary
+      summary,
     } as SummarizeResponse);
-
   } catch (error: unknown) {
     console.error('要約処理エラー:', error);
 
@@ -174,11 +180,14 @@ app.post('/summarize', async (c) => {
 
     if (hasStatusCode(error)) {
       if (error.status === 429) {
-        errorMessage = 'OpenAI APIのクォータ制限に達しました。APIキーの利用制限を確認してください。';
+        errorMessage =
+          'OpenAI APIのクォータ制限に達しました。APIキーの利用制限を確認してください。';
       } else if (error.status === 401) {
-        errorMessage = 'OpenAI APIキーが無効です。正しいAPIキーを入力してください。';
+        errorMessage =
+          'OpenAI APIキーが無効です。正しいAPIキーを入力してください。';
       } else if (error.code === 'insufficient_quota') {
-        errorMessage = 'OpenAI APIの利用枠を超えました。請求情報を確認してください。';
+        errorMessage =
+          'OpenAI APIの利用枠を超えました。請求情報を確認してください。';
       }
     }
 
@@ -187,7 +196,7 @@ app.post('/summarize', async (c) => {
 
     return c.json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
     } as SummarizeResponse, statusCode as unknown as ContentfulStatusCode);
   }
 });
@@ -198,5 +207,5 @@ console.log(`動画より文字派！ API Server starting on port ${port}...`);
 
 export default {
   port,
-  fetch: app.fetch
+  fetch: app.fetch,
 };

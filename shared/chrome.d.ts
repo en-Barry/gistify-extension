@@ -2,22 +2,28 @@
 interface Chrome {
   storage: {
     local: {
-      get: (keys: string | string[] | object | null, callback: (items: { [key: string]: unknown }) => void) => void;
+      get: (
+        keys: string | string[] | object | null,
+        callback: (items: { [key: string]: unknown }) => void,
+      ) => void;
       set: (items: object, callback?: () => void) => void;
       remove: (keys: string | string[], callback?: () => void) => void;
     };
   };
   tabs: {
-    query: (queryInfo: {
-      active?: boolean;
-      currentWindow?: boolean;
-      [key: string]: unknown;
-    }, callback: (tabs: {
-      id?: number;
-      url?: string;
-      title?: string;
-      [key: string]: unknown;
-    }[]) => void) => void;
+    query: (
+      queryInfo: {
+        active?: boolean;
+        currentWindow?: boolean;
+        [key: string]: unknown;
+      },
+      callback: (tabs: {
+        id?: number;
+        url?: string;
+        title?: string;
+        [key: string]: unknown;
+      }[]) => void,
+    ) => void;
   };
 }
 

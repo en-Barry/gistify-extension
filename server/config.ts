@@ -1,4 +1,4 @@
-import process from "node:process";
+import process from 'node:process';
 
 import { config } from 'dotenv';
 
@@ -16,7 +16,9 @@ interface AppConfig {
 // 環境変数を取得し、デフォルト値を設定
 const appConfig: AppConfig = {
   nodeEnv: process.env.NODE_ENV || 'development',
-  mockMode: process.env.NODE_ENV === 'production' ? false : process.env.MOCK_MODE === 'true',
+  mockMode: process.env.NODE_ENV === 'production'
+    ? false
+    : process.env.MOCK_MODE === 'true',
   port: parseInt(process.env.PORT || '3000', 10),
   openaiApiKey: process.env.OPENAI_API_KEY,
 };

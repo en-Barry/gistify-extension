@@ -10,5 +10,7 @@ declare module 'youtube-captions-scraper' {
     lang?: string;
   }
 
-  export function getSubtitles(options: GetSubtitlesOptions): Promise<CaptionItem[]>;
+  export function getSubtitles(
+    options: GetSubtitlesOptions,
+  ): Promise<CaptionItem[]>;
 }

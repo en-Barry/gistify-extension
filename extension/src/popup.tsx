@@ -1,13 +1,19 @@
 import DOMPurify from 'dompurify';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import redaxios from 'redaxios';
 import type { RedaxiosError } from 'redaxios';
 
-import { SummarizeRequest, SummarizeResponse, AppSettings } from '../../shared/types.ts';
+import {
+  AppSettings,
+  SummarizeRequest,
+  SummarizeResponse,
+} from '../../shared/types.ts';
 
 // redaxiosのエラーを判定する型ガード関数
-function isRedaxiosError(error: unknown): error is RedaxiosError<{error: string}> {
+function isRedaxiosError(
+  error: unknown,
+): error is RedaxiosError<{ error: string }> {
   return (
     typeof error === 'object' &&
     error !== null &&
@@ -109,7 +115,7 @@ const App: React.FC = () => {
     // ローディング進捗のシミュレーション
     setLoadingProgress(0);
     const progressInterval = setInterval(() => {
-      setLoadingProgress(prev => {
+      setLoadingProgress((prev) => {
         // 95%までしか進まないようにする（完了は別で処理）
         if (prev >= 95) {
           clearInterval(progressInterval);
@@ -146,11 +152,15 @@ const App: React.FC = () => {
         ? { mode: 'youtube', videoId, apiKey }
         : { mode: 'manual', text, apiKey };
 
-      const response = await redaxios.post(`${config.apiUrl}/summarize`, request, {
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await redaxios.post(
+        `${config.apiUrl}/summarize`,
+        request,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
 
       const data = response.data as SummarizeResponse;
 
@@ -178,7 +188,9 @@ const App: React.FC = () => {
         setError(`エラー: ${err.message}`);
       } else {
         // その他のエラー
-        setError('要約処理中にエラーが発生しました。サーバーが起動しているか確認してください。');
+        setError(
+          '要約処理中にエラーが発生しました。サーバーが起動しているか確認してください。',
+        );
       }
     } finally {
       clearInterval(progressInterval);
@@ -200,83 +212,87 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div className='container'>
       <h1>動画より文字派！</h1>
-      <p className="subtitle">YouTube字幕・テキスト要約ツール</p>
+      <p className='subtitle'>YouTube字幕・テキスト要約ツール</p>
 
       {/* モード選択 */}
-      <div className="form-group">
-        <label htmlFor="mode">モード選択:</label>
+      <div className='form-group'>
+        <label htmlFor='mode'>モード選択:</label>
         <select
-          id="mode"
+          id='mode'
           value={mode}
           onChange={(e) => setMode(e.target.value as 'youtube' | 'manual')}
-          className="select-input"
+          className='select-input'
         >
-          <option value="youtube">YouTube字幕</option>
-          <option value="manual">自由入力</option>
+          <option value='youtube'>YouTube字幕</option>
+          <option value='manual'>自由入力</option>
         </select>
       </div>
 
       {/* YouTube動画ID入力 */}
       {mode === 'youtube' && (
-        <div className="form-group">
-          <label htmlFor="videoId">YouTube動画ID:</label>
+        <div className='form-group'>
+          <label htmlFor='videoId'>YouTube動画ID:</label>
           <input
-            type="text"
-            id="videoId"
+            type='text'
+            id='videoId'
             value={videoId}
             onChange={(e) => setVideoId(e.target.value)}
-            placeholder="例: dQw4w9WgXcQ または完全なURL"
-            className="text-input"
+            placeholder='例: dQw4w9WgXcQ または完全なURL'
+            className='text-input'
           />
         </div>
       )}
 
       {/* 自由入力テキスト */}
       {mode === 'manual' && (
-        <div className="form-group">
-          <label htmlFor="text">要約するテキスト:</label>
+        <div className='form-group'>
+          <label htmlFor='text'>要約するテキスト:</label>
           <textarea
-            id="text"
+            id='text'
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="要約したいテキストを入力してください"
+            placeholder='要約したいテキストを入力してください'
             rows={5}
-            className="textarea-input"
+            className='textarea-input'
           />
         </div>
       )}
 
       {/* APIキー入力 */}
       {(showApiKeyInput || !hasStoredApiKey) && (
-        <div className="form-group">
-          <label htmlFor="apiKey">OpenAI APIキー:</label>
+        <div className='form-group'>
+          <label htmlFor='apiKey'>OpenAI APIキー:</label>
           <input
-            type="password"
-            id="apiKey"
+            type='password'
+            id='apiKey'
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-..."
-            className="text-input"
+            placeholder='sk-...'
+            className='text-input'
           />
-          <p className="hint">※APIキーは端末内に保存されます</p>
+          <p className='hint'>※APIキーは端末内に保存されます</p>
         </div>
       )}
 
       {/* ボタン */}
-      <div className="button-group">
+      <div className='button-group'>
         <button
-          type="button"
+          type='button'
           onClick={handleSummarize}
           disabled={isLoading}
-          className="primary-button"
+          className='primary-button'
         >
           {isLoading ? '要約中...' : '要約する'}
         </button>
 
         {hasStoredApiKey && (
-          <button type="button" onClick={resetApiKey} className="secondary-button">
+          <button
+            type='button'
+            onClick={resetApiKey}
+            className='secondary-button'
+          >
             APIキーを再設定
           </button>
         )}
@@ -284,40 +300,41 @@ const App: React.FC = () => {
 
       {/* ローディングインジケーター */}
       {isLoading && (
-        <div className="loading-container">
-          <div className="loading-bar-background">
+        <div className='loading-container'>
+          <div className='loading-bar-background'>
             <div
-              className="loading-bar-progress"
+              className='loading-bar-progress'
               style={{ width: `${loadingProgress}%` }}
-            ></div>
+            >
+            </div>
           </div>
-          <div className="loading-text">{loadingProgress}% 完了</div>
+          <div className='loading-text'>{loadingProgress}% 完了</div>
         </div>
       )}
 
       {/* エラーメッセージ */}
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className='error-message'>{error}</div>}
 
       {/* 要約結果 */}
       {summary && (
-        <div className="result-container">
-          <div className="result-header">
+        <div className='result-container'>
+          <div className='result-header'>
             <h2>要約結果</h2>
             <button
-              type="button"
+              type='button'
               onClick={copyToClipboard}
               className={`copy-button ${copySuccess ? 'copy-success' : ''}`}
             >
               {copySuccess ? 'コピーしました！' : 'コピー'}
             </button>
           </div>
-          <pre className="summary-text">{DOMPurify.sanitize(summary)}</pre>
+          <pre className='summary-text'>{DOMPurify.sanitize(summary)}</pre>
         </div>
       )}
 
       <footer>
         <p>© 2025 動画より文字派！ - OpenAI API を使用</p>
-        <p className="version">v{config.version}</p>
+        <p className='version'>v{config.version}</p>
       </footer>
     </div>
   );
