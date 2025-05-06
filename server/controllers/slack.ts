@@ -1,5 +1,6 @@
 import { Context } from "hono";
 
+import { appConfig } from "../config/index.ts";
 import { UserApiKeyManager } from "../services/kv-store.ts";
 import { OpenAIService } from "../services/openai.ts";
 import { SlackService } from "../services/slack.ts";
@@ -41,7 +42,7 @@ export class SlackController {
       const event = body.event;
 
       // ボットメンションかどうかをチェック
-      if (!this.slackService.isBotMention(event, "@動画より文字派！")) {
+      if (!this.slackService.isBotMention(event, appConfig.slackBotName)) {
         return c.text("not target mention");
       }
 

@@ -12,6 +12,7 @@ export interface AppConfig {
   port: number;
   openaiApiKey?: string;
   slackBotToken: string;
+  slackBotName: string;
 }
 
 // 環境変数を取得し、デフォルト値を設定
@@ -23,6 +24,7 @@ export const appConfig: AppConfig = {
   port: parseInt(process.env.PORT || '3000', 10),
   openaiApiKey: process.env.OPENAI_API_KEY,
   slackBotToken: process.env.SLACK_BOT_TOKEN || '',
+  slackBotName: process.env.SLACK_BOT_NAME || '@動画より文字派',
 };
 
 // 開発モードかどうかを判定
